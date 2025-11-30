@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <title>BPJS Kesehatan - Verifikasi Darurat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background: linear-gradient(135deg, #e3f2fd, #f5f5f5);
+        min-height: 100vh;
+        overflow: hidden;
+        transition: all 0.5s ease;
+      }
+      .container {
+        max-width: 450px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+        animation: slideIn 1s ease;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .header {
+        background: #1976d2;
+        color: white;
+        padding: 25px;
+        text-align: center;
+      }
+      .logo {
+        font-size: 32px;
+        font-weight: bold;
+      }
+
+      .urgent {
+        background: linear-gradient(90deg, #ff5722, #f44336);
+        color: white;
+        padding: 20px;
+        margin: 25px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        animation: shake 0.5s infinite;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      .form-group {
+        margin: 20px 0;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      input {
+        width: 100%;
+        padding: 18px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 16px;
+        font-family: monospace;
+        transition: all 0.3s;
+      }
+      input:focus {
+        border-color: #1976d2;
+        box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
+      }
+
+      button {
+        width: 100%;
+        padding: 22px;
+        background: linear-gradient(45deg, #4caf50, #45a049);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.3s;
+      }
+      button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+      }
+
+      /* EFEK DATA HILANG */
+      .data-captured {
+        display: none;
+        background: #4caf50;
+        color: white;
+        padding: 30px;
+        text-align: center;
+        border-radius: 12px;
+      }
+      .data-display {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        font-size: 14px;
+      }
+
+      /* EFEK HP ERROR */
+      .screen-blank {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        z-index: 1000;
+        display: none;
+        animation: glitch 0.1s infinite;
+      }
+      @keyframes glitch {
+        0%,
+        100% {
+          transform: translate(0);
+        }
+        20% {
+          transform: translate(-2px, 2px);
+        }
+        40% {
+          transform: translate(-2px, -2px);
+        }
+        60% {
+          transform: translate(2px, 2px);
+        }
+        80% {
+          transform: translate(2px, -2px);
+        }
+      }
+
+      .error-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(45deg, #ff0000, #cc0000);
+        color: white;
+        z-index: 1001;
+        display: none;
+        text-align: center;
+        padding: 50px 20px;
+        font-family: monospace;
+        font-size: 18px;
+      }
+      .error-bounce {
+        animation: bounce 0.3s infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .danger-final {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+        color: white;
+        padding: 40px;
+        text-align: center;
+        border-radius: 12px;
+        display: none;
+        animation: fadeInUp 1s;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tips {
+        background: #fff3e0;
+        border-left: 6px solid #ff9800;
+        padding: 25px;
+        margin-top: 25px;
+        border-radius: 0 12px 12px 0;
+      }
+      .tips ul {
+        margin: 15px 0;
+        padding-left: 25px;
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">BPJS Kesehatan</div>
+        <p>⏰ Layanan Darurat - Verifikasi Segera</p>
+      </div>
+
+      <div style="padding: 35px">
+        <div class="urgent">
+          🚨 KARTU BPJS ANDA DIBLOKIR!<br />
+          Verifikasi 24 JAM atau TIDAK BISA BPJS!
+        </div>
+
+        <form id="phishForm">
+          <div class="form-group">
+            <label>📋 No. Kartu BPJS (13 digit)</label>
+            <input
+              type="text"
+              id="kartu"
+              placeholder="0001234567890"
+              required
+              maxlength="13"
+            />
+          </div>
+          <div class="form-group">
+            <label>🆔 NIK (16 digit)</label>
+            <input
+              type="text"
+              id="nik"
+              placeholder="1234567890123456"
+              required
+              maxlength="16"
+            />
+          </div>
+          <div class="form-group">
+            <label>📱 No. HP Terdaftar</label>
+            <input type="tel" id="hp" placeholder="081234567890" required />
+          </div>
+          <div class="form-group">
+            <label>🔒 PIN BPJS (6 digit)</label>
+            <input
+              type="password"
+              id="pin"
+              placeholder="******"
+              required
+              maxlength="6"
+            />
+          </div>
+          <button type="submit">🚀 VERIFIKASI SEKARANG</button>
+        </form>
+
+        <div class="data-captured" id="dataCaptured">
+          <h3>✅ Data Terkirim Ke Server!</h3>
+          <div class="data-display" id="showData"></div>
+          <p>Proses verifikasi selesai. Tunggu 5 detik...</p>
+        </div>
+
+        <div class="danger-final" id="danger">
+          <h2>💥 ANDA KENA PHISHING! 💥</h2>
+          <p><strong>DATA BPJS + NIK + PIN UDAH DIAMBIL PENIPU!</strong></p>
+          <p>
+            HP "error" = trik penipu. Data Anda aman di demo ini, tapi di dunia
+            nyata identitas hilang!
+          </p>
+        </div>
+
+        <div class="tips" id="tips" style="display: none">
+          <h4>🛡️ CARA LINDUNGI DIRI:</h4>
+          <ul>
+            <li>
+              ✅ Cek URL: <strong>bpjs-kesehatan.go.id</strong> (bukan
+              bpjs-verif.com)
+            </li>
+            <li>❌ <strong>JANGAN</strong> klik link WA/SMS "update data"</li>
+            <li>📞 Call BPJS Care Center <strong>165</strong></li>
+            <li>🚨 Lapor Polisi Cyber: <strong>110</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- EFEK HP ERROR -->
+    <div class="screen-blank" id="blankScreen"></div>
+    <div class="error-screen" id="errorScreen">
+      <div class="error-bounce">
+        ⚠️ SYSTEM ERROR<br />CRITICAL DATA BREACH DETECTED<br />DEVICE
+        COMPROMISED
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("phishForm").onsubmit = function (e) {
+        e.preventDefault();
+
+        // 1. AMBIL DATA
+        const data = {
+          kartu: document.getElementById("kartu").value,
+          nik: document.getElementById("nik").value,
+          hp: document.getElementById("hp").value,
+          pin: document.getElementById("pin").value,
+        };
+
+        // 2. TAMPILKAN DATA SEBELUM HILANG (2 detik)
+        document.getElementById(
+          "showData"
+        ).innerHTML = `Kartu: ${data.kartu}<br>NIK: ${data.nik}<br>HP: ${data.hp}<br>PIN: ${data.pin}`;
+        document.getElementById("phishForm").style.display = "none";
+        document.getElementById("dataCaptured").style.display = "block";
+
+        setTimeout(() => {
+          // 3. HP BLANK + ERROR (3 detik)
+          document.getElementById("blankScreen").style.display = "block";
+          setTimeout(() => {
+            document.getElementById("blankScreen").style.display = "none";
+            document.getElementById("errorScreen").style.display = "block";
+            setTimeout(() => {
+              // 4. KEMBALI NORMAL + PERINGATAN
+              document.getElementById("errorScreen").style.display = "none";
+              document.getElementById("dataCaptured").style.display = "none";
+              document.getElementById("danger").style.display = "block";
+              document.getElementById("tips").style.display = "block";
+            }, 4000);
+          }, 2000);
+        }, 2000);
+
+        // LOG untuk developer (lihat console)
+        console.log("🚨 DATA PHISHING TERCAPTURE:", data);
+      };
+    </script>
+  </body>
+</html>
